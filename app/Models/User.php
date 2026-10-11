@@ -17,6 +17,11 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_admin || $this->role === 'super-admin';
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -27,6 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 }

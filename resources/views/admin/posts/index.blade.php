@@ -4,7 +4,7 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center border-b border-zinc-800 pb-4">
         <div>
-            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-zinc-500 hover:text-white uppercase">← Batal</a>
+            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-zinc-500 hover:text-white uppercase">← kembali</a>
             <h1 class="text-3xl font-black uppercase text-accent tracking-tight">Kelola Berita & Review</h1>
             <p class="text-xs text-zinc-500 uppercase mt-1">Daftar Semua Artikel Redaksi</p>
         </div>

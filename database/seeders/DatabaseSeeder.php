@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CadasSeeder::class,
             GigSeeder::class,
+            UserSeeder::class,
             LostAndFoundSeeder::class,
         ]);
     }

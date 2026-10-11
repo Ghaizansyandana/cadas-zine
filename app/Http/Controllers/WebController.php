@@ -1,52 +1,69 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Models\Post;
-use App\Models\Zine;
+
 use App\Models\Band;
 use App\Models\Gig;
 use App\Models\LostAndFound;
 use App\Models\PhysicalRelease;
+use App\Models\Post;
+
+use App\Models\Zine;
+use App\Support\ArticleContentSanitizer;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class WebController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::latest()->take(6)->get();
-        $gigs = Gig::where('event_date', '>=', now())->orderBy('event_date', 'asc')->take(4)->get();
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'category' => ['nullable', Rule::in(['all', 'news', 'review', 'interview', 'editorial'])],
+        ]);
+
+        $postsQuery = Post::query()->where('is_approved', true);
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+
+            $postsQuery->where(function ($query) use ($search) {
+                $query->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('excerpt', 'LIKE', "%{$search}%")
+                    ->orWhere('content', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if (! empty($filters['category']) && $filters['category'] !== 'all') {
+            $postsQuery->where('category', $filters['category']);
+        }
+
+        $posts = $postsQuery->latest()->take(6)->get();
+        $gigs = Gig::where('is_approved', true)
+            ->where('event_date', '>=', now())
+            ->orderBy('event_date')
+            ->take(4)
+            ->get();
+
         return view('home', compact('posts', 'gigs'));
-
-        $query = Post::query();
-
-    // Filter Search Keyword
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request) {
-            $q->where('title', 'LIKE', '%' . $request->search . '%')
-              ->orWhere('content', 'LIKE', '%' . $request->search . '%');
-        });
     }
 
-    // Filter Category
-    if ($request->filled('category') && $request->category !== 'all') {
-        $query->where('category', $request->category);
-    }
-
-    $posts = $query->latest()->get();
-    $gigs = Gig::where('event_date', '>=', now())->orderBy('event_date', 'asc')->take(4)->get();
-
-    return view('home', compact('posts', 'gigs'));
-    }
-
-    public function showPost($slug)
+    public function showPost(string $slug, ArticleContentSanitizer $sanitizer)
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
+        $post = Post::where('slug', $slug)
+            ->where('is_approved', true)
+            ->firstOrFail();
+        $post->content = $sanitizer->sanitize($post->content);
+
         return view('post-detail', compact('post'));
     }
 
     public function gigs()
     {
-        $gigs = Gig::orderBy('event_date', 'asc')->get();
+        $gigs = Gig::where('is_approved', true)
+            ->orderBy('event_date')
+            ->get();
+
         return view('gigs', compact('gigs'));
     }
 
@@ -70,7 +87,10 @@ class WebController extends Controller
             $validated['poster_image'] = $request->file('poster_image')->store('gigs-posters', 'public');
         }
 
-        Gig::create($validated);
+        Gig::create([
+            ...$validated,
+            'is_approved' => false,
+        ]);
 
         return back()->with('success', 'Agenda gig & poster berhasil dikirim!');
     }
@@ -97,15 +117,24 @@ class WebController extends Controller
 
     public function bands(Request $request)
     {
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'genre' => ['nullable', Rule::in(['all', 'Metal', 'Grindcore', 'Hardcore', 'Sludge', 'Death Metal'])],
+        ]);
+
         $query = Band::query();
 
-        if ($request->filled('search')) {
-            $query->where('name', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('city', 'LIKE', '%' . $request->search . '%');
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('city', 'LIKE', "%{$search}%");
+            });
         }
 
-        if ($request->filled('genre') && $request->genre !== 'all') {
-            $query->where('genre', $request->genre);
+        if (! empty($filters['genre']) && $filters['genre'] !== 'all') {
+            $query->where('genre', $filters['genre']);
         }
 
         $bands = $query->orderBy('name', 'asc')->get();
@@ -115,7 +144,8 @@ class WebController extends Controller
 
     public function pitLostFound()
     {
-        $items = LostAndFound::latest()->get();
+        $items = LostAndFound::where('is_approved', true)->latest()->get();
+
         return view('pit-lost-found', compact('items'));
     }
 
@@ -130,8 +160,16 @@ class WebController extends Controller
             'contact_person' => 'required|string|max:255',
         ]);
 
-        LostAndFound::create($validated);
+        LostAndFound::create([
+            ...$validated,
+            'is_approved' => false,
+        ]);
 
         return back()->with('success', 'Laporan berhasil terbit di Pit Board!');
+    }
+
+    public function guide()
+    {
+        return view('guide');
     }
 }

@@ -3,6 +3,7 @@
 @section('content')
 <div class="max-w-xl mx-auto space-y-6">
     <div class="border-b border-zinc-800 pb-4">
+        <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-zinc-500 hover:text-white uppercase">← Batal</a>
         <h1 class="text-2xl font-black uppercase text-accent">Submit Gig Radar</h1>
         <p class="text-xs text-zinc-500 uppercase mt-1">Kirim pamflet & info acara ke database INFOMUSIKCADAS</p>
     </div>

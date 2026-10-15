@@ -26,6 +26,16 @@ class WebControllerTest extends TestCase
             ->assertDontSee('Noise pending review');
     }
 
+    public function test_homepage_renders_uploaded_post_cover_image(): void
+    {
+        $post = $this->createPost('Featured article', 'news', true);
+        $post->update(['cover_image' => 'posts/featured-cover.jpg']);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('storage/posts/featured-cover.jpg');
+    }
+
     public function test_unapproved_posts_gigs_and_pit_reports_are_not_public(): void
     {
         $post = $this->createPost('Pending article', 'review', false);
@@ -51,7 +61,7 @@ class WebControllerTest extends TestCase
             ->assertDontSee($post->title)
             ->assertDontSee('Pending show');
         $this->get(route('post.show', $post->slug))->assertNotFound();
-        $this->get(route('gigs.index'))->assertOk()->assertDontSee('Pending show');
+        $this->get(route(''))->assertOk()->assertDontSee('Pending show');
         $this->get(route('pit.index'))->assertOk()->assertDontSee('Pending item');
     }
 
@@ -69,7 +79,7 @@ class WebControllerTest extends TestCase
             'title' => 'Submitted gig',
             'is_approved' => false,
         ]);
-        $this->get(route('gigs.index'))->assertDontSee('Submitted gig');
+        $this->get(route(''))->assertDontSee('Submitted gig');
 
         $this->post(route('pit.store'), [
             'item_name' => 'Submitted item',

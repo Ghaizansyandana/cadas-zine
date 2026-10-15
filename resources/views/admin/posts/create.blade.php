@@ -9,7 +9,7 @@
     
     <div class="flex justify-between items-center border-b border-zinc-800 pb-4">
         <h1 class="text-2xl font-black uppercase text-accent tracking-tight">Tulis Artikel Baru</h1>
-        <a href="{{ route('admin.posts.index') }}" class="text-xs font-bold text-zinc-500 hover:text-white uppercase">← Batal</a>
+        <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-zinc-500 hover:text-white uppercase">← Batal</a>
     </div>
 
     <form id="post-form" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data" class="bg-zinc-900 border border-zinc-800 p-6 space-y-4">
@@ -23,6 +23,10 @@
                 <li><strong class="text-white">Link (Tulisan Biru):</strong> Blok teks, klik ikon rantai (link), lalu masukkan URL tujuan.</li>
                 <li><strong class="text-white">Reset Format:</strong> Kalau teks berantakan formatnya, blok teks tersebut lalu klik ikon <strong class="text-white">Tₓ</strong> (Clear Formatting) di ujung kanan toolbar.</li>
             </ul>
+        </div>
+        <div>
+            <label class="block text-xs font-bold uppercase text-zinc-400 mb-1">Gambar Cover Berita (Banner)</label>
+            <input type="file" name="cover_image" accept="image/*" class="w-full bg-zinc-950 border border-zinc-800 p-2 text-xs text-zinc-400">
         </div>
         <div>
             <label class="block text-xs font-bold uppercase text-zinc-400 mb-1">Judul Artikel</label>

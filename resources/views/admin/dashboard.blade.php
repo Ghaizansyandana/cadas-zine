@@ -66,6 +66,9 @@
                     tulis artikel baru
                 </a>
                 <a href="{{ route('admin.posts.index') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
+                    edit / kelola artikel 
+                </a>
+                <a href="{{ route('admin.posts.index') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
                     Kelola Berita & Zines
                 </a>
                 <a href="{{ route('admin.gigs.create') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
@@ -77,6 +80,12 @@
                 {{-- <a href="{{ route('admin.gigs.index') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
                     kelola gigs
                 </a> --}}
+                <a href="{{ route('admin.users.index') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
+                    Kelola User
+                </a>
+                <a href="{{ route('admin.users.create') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
+                    Tambah User
+                </a>
                 <a href="{{ route('admin.dashboard') }}" class="bg-zinc-950 border border-zinc-800 hover:border-accent text-zinc-300 hover:text-white font-bold text-xs uppercase p-3 text-center transition flex items-center justify-center">
                     Refresh System
                 </a>

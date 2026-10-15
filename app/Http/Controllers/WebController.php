@@ -7,7 +7,6 @@ use App\Models\Gig;
 use App\Models\LostAndFound;
 use App\Models\PhysicalRelease;
 use App\Models\Post;
-
 use App\Models\Zine;
 use App\Support\ArticleContentSanitizer;
 use Illuminate\Http\Request;
@@ -45,7 +44,10 @@ class WebController extends Controller
             ->take(4)
             ->get();
 
-        return view('home', compact('posts', 'gigs'));
+        // Tambahan variabel $bands buat nampilin scene index di beranda
+        $bands = Band::latest()->take(8)->get();
+
+        return view('home', compact('posts', 'gigs', 'bands'));
     }
 
     public function showPost(string $slug, ArticleContentSanitizer $sanitizer)
@@ -95,23 +97,24 @@ class WebController extends Controller
         return back()->with('success', 'Agenda gig & poster berhasil dikirim!');
     }
 
-
     public function vault()
     {
         $releases = PhysicalRelease::latest()->get();
+
         return view('vault', compact('releases'));
     }
-
 
     public function zines()
     {
         $zines = Zine::latest()->get();
+
         return view('zines.index', compact('zines'));
     }
 
     public function showZine($id)
     {
         $zine = Zine::findOrFail($id);
+
         return view('zines.show', compact('zine'));
     }
 
